@@ -1,0 +1,9 @@
+release
+release/*
+debug
+debug/*
+compile_commands.json
+.compenv
+.logenv
+.cache
+.cache/*
