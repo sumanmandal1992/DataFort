@@ -1,7 +1,6 @@
 #include "window.h"
 #include <stdlib.h>
 
-// This is main function
 int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
