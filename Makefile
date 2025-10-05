@@ -5,7 +5,7 @@ RELCFLAGS := -O3 -DNDEBUG
 CFLAGS = -std=c2x -Wall -fmax-errors=10 -Wextra -I$(IDIR)
 PKGCONFIG ?= $(shell which pkg-config)
 SDLCONFIG ?=
-MYSQLCONFIG ?= $(shell which mysql_config)
+MYSQLCONFIG ?= $(shell which mariadb_config)
 LFLAGS := $(shell $(PKGCONFIG) gtk4 --cflags) $(shell $(MYSQLCONFIG) --cflags)
 LIBS := $(shell $(PKGCONFIG) gtk4 --libs) $(shell $(MYSQLCONFIG) --libs)
 

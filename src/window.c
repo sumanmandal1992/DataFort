@@ -5,7 +5,6 @@
 #include "gtk/gtkshortcut.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct DataFort DataFort;
 static DataFort *df = NULL;
@@ -103,20 +102,13 @@ static void stackConfig() {
   const gchar *StackItems[] = {"Sale Entry",     "Sale Bill Entry",
                                "Purchase Entry", "Purchase Bill Entry",
                                "Database Query", "Update db (admin)"};
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedSale, "hpanedSale",
-                       StackItems[0]);
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedSaleBill,
-                       "hpanedSaleBill", StackItems[1]);
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedPurchase,
-                       "hpanedPurchase", StackItems[2]);
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedPurchaseBill,
-                       "hpanedPurchaseBill", StackItems[3]);
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedQuery, "hpanedQuery",
-                       StackItems[4]);
-  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedUpdateDb,
-                       "hpanedUpdateDb", StackItems[5]);
-  gtk_stack_sidebar_set_stack(GTK_STACK_SIDEBAR(df->stackSidebar),
-                              GTK_STACK(df->stackMain));
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedSale, "hpanedSale", StackItems[0]);
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedSaleBill, "hpanedSaleBill", StackItems[1]);
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedPurchase, "hpanedPurchase", StackItems[2]);
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedPurchaseBill, "hpanedPurchaseBill", StackItems[3]);
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedQuery, "hpanedQuery", StackItems[4]);
+  gtk_stack_add_titled(GTK_STACK(df->stackMain), df->hpanedUpdateDb, "hpanedUpdateDb", StackItems[5]);
+  gtk_stack_sidebar_set_stack(GTK_STACK_SIDEBAR(df->stackSidebar), GTK_STACK(df->stackMain));
 }
 
 static void company_product_list() {
@@ -492,7 +484,8 @@ static void purchase_bill_entry() {
  * Database Query *
  ******************/
 typedef struct _QueryData {
-  GtkWidget *entry[5];
+  GtkWidget *dropdn[3];
+  GtkWidget *entry[2];
 } QueryData;
 
 static QueryData ents;
@@ -513,11 +506,11 @@ static void query_database() {
 
   label[0] = gtk_label_new("Start date");
   label[1] = gtk_label_new("End date");
-  ents.entry[0] = gtk_drop_down_new_from_strings(dbs);
-  ents.entry[1] = gtk_drop_down_new_from_strings(company);
-  ents.entry[2] = gtk_drop_down_new_from_strings(product);
-  ents.entry[3] = gtk_entry_new();
-  ents.entry[4] = gtk_entry_new();
+  ents.dropdn[0] = gtk_drop_down_new_from_strings(dbs);
+  ents.dropdn[1] = gtk_drop_down_new_from_strings(company);
+  ents.dropdn[2] = gtk_drop_down_new_from_strings(product);
+  ents.entry[0] = gtk_entry_new();
+  ents.entry[1] = gtk_entry_new();
 
   // Database Query Pane
   gtk_widget_set_size_request(df->hpanedQuery, 200, -1);
@@ -555,13 +548,13 @@ static void query_database() {
   g_signal_connect(btn, "clicked", G_CALLBACK(query_result), grid[1]);
   //
   // Grid Configuration
-  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[0], 0, 0, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[1], 1, 0, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[2], 2, 0, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid[0]), ents.dropdn[0], 0, 0, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid[0]), ents.dropdn[1], 1, 0, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid[0]), ents.dropdn[2], 2, 0, 1, 1);
   gtk_grid_attach(GTK_GRID(grid[0]), label[0], 0, 1, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[3], 1, 1, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[0], 1, 1, 1, 1);
   gtk_grid_attach(GTK_GRID(grid[0]), label[1], 2, 1, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[4], 3, 1, 1, 1);
+  gtk_grid_attach(GTK_GRID(grid[0]), ents.entry[1], 3, 1, 1, 1);
   gtk_grid_attach(GTK_GRID(grid[0]), btn, 0, 2, 1, 1);
 
   gtk_grid_set_row_spacing(GTK_GRID(grid[0]), 4);
@@ -570,6 +563,10 @@ static void query_database() {
   gtk_widget_set_halign(label[0], GTK_ALIGN_START);
   gtk_widget_set_halign(label[1], GTK_ALIGN_START);
   gtk_widget_set_halign(btn, GTK_ALIGN_START);
+  
+  gtk_drop_down_set_show_arrow(GTK_DROP_DOWN(ents.dropdn[0]), TRUE);
+  gtk_drop_down_set_show_arrow(GTK_DROP_DOWN(ents.dropdn[1]), TRUE);
+  gtk_drop_down_set_show_arrow(GTK_DROP_DOWN(ents.dropdn[2]), TRUE);
 }
 
 /****************
@@ -578,9 +575,9 @@ static void query_database() {
 static void query_result(GtkWidget *widget, gpointer data) {
   /*{"Sale", "Sale Bill","Purchase", "Purchase Bill"}*/
   (void)widget;
-  short dbs = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.entry[0]));
-  short com = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.entry[1]));
-  short prod = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.entry[2]));
+  short dbs = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.dropdn[0]));
+  short com = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.dropdn[1]));
+  short prod = gtk_drop_down_get_selected(GTK_DROP_DOWN(ents.dropdn[2]));
 
   gtk_grid_remove_row(GTK_GRID(data), 0);
   if (dbs == 0) {

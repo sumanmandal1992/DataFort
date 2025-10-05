@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+typedef struct _QueryRes {
+  unsigned int num_fields;
+  unsigned long num_rows;
+  MYSQL_RES *result;
+} QueryRes;
+
 typedef struct _Pool {
   const char *host;
   const char *usr;
